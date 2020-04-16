@@ -1,47 +1,46 @@
 <?php
 /**
- * The template for displaying all single posts
+ * The template for displaying all single posts.
  *
- * @link https://developer.wordpress.org/themes/basics/template-hierarchy/#single-post
- *
- * @package WordPress
- * @subpackage Twenty_Seventeen
- * @since Twenty Seventeen 1.0
- * @version 1.0
+ * @package cosimo
  */
 
-get_header(); ?>
+get_header();
+$enlargeFeatImage = get_theme_mod('cosimo_theme_options_enlargefeatured', '1');
+?>
 
-<div class="wrap">
 	<div id="primary" class="content-area">
-		<main id="main" class="site-main" role="main">
+		<?php if ($enlargeFeatImage == 1) : ?>
+			<div class="openFeatImage"><i class="fa fa-lg fa-angle-double-down"></i></div>
+		<?php endif; ?>
+		<main id="main" class="site-main">
+		<?php if ( ! function_exists( 'elementor_theme_do_location' ) || ! elementor_theme_do_location( 'single' ) ) : ?>
+			<?php while ( have_posts() ) : the_post(); ?>
 
-			<?php
-			// Start the Loop.
-			while ( have_posts() ) :
-				the_post();
+				<?php get_template_part( 'template-parts/content', 'single' ); ?>
 
-				get_template_part( 'template-parts/post/content', get_post_format() );
+				<?php
+					the_post_navigation( array(
+						'next_text' => '<div class="theMetaLink"><div class="meta-nav" aria-hidden="true"><span class="smallPart">' . esc_html__( 'Next Post', 'cosimo' ) . '</span></div> <i class="fa fa-lg fa-angle-right spaceLeft"></i></div>' .
+							'<span class="screen-reader-text">' . esc_html__( 'Next post:', 'cosimo' ) . '</span> ' .
+							'<div class="theMetaTitle">%title</div>',
+						'prev_text' => '<div class="theMetaLink"><i class="fa fa-lg fa-angle-left spaceRight"></i> <div class="meta-nav" aria-hidden="true"><span class="smallPart">' . esc_html__( 'Previous Post', 'cosimo' ) . '</span></div></div>' .
+							'<span class="screen-reader-text">' . esc_html__( 'Previous post:', 'cosimo' ) . '</span> ' .
+							'<div class="theMetaTitle">%title</div>',
+					) );
+				?>
 
-				// If comments are open or we have at least one comment, load up the comment template.
-				if ( comments_open() || get_comments_number() ) :
-					comments_template();
-				endif;
+				<?php
+					// If comments are open or we have at least one comment, load up the comment template
+					if ( comments_open() || get_comments_number() ) :
+						comments_template();
+					endif;
+				?>
 
-				the_post_navigation(
-					array(
-						'prev_text' => '<span class="screen-reader-text">' . __( 'Previous Post', 'twentyseventeen' ) . '</span><span aria-hidden="true" class="nav-subtitle">' . __( 'Previous', 'twentyseventeen' ) . '</span> <span class="nav-title"><span class="nav-title-icon-wrapper">' . twentyseventeen_get_svg( array( 'icon' => 'arrow-left' ) ) . '</span>%title</span>',
-						'next_text' => '<span class="screen-reader-text">' . __( 'Next Post', 'twentyseventeen' ) . '</span><span aria-hidden="true" class="nav-subtitle">' . __( 'Next', 'twentyseventeen' ) . '</span> <span class="nav-title">%title<span class="nav-title-icon-wrapper">' . twentyseventeen_get_svg( array( 'icon' => 'arrow-right' ) ) . '</span></span>',
-					)
-				);
-
-			endwhile; // End the loop.
-			?>
-
+			<?php endwhile; // end of the loop. ?>
+		<?php endif; ?>
 		</main><!-- #main -->
 	</div><!-- #primary -->
-	<?php get_sidebar(); ?>
-</div><!-- .wrap -->
 
-<?php
-get_footer();
+<?php get_sidebar(); ?>
+<?php get_footer(); ?>

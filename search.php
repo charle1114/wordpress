@@ -1,72 +1,64 @@
 <?php
 /**
- * The template for displaying search results pages
+ * The template for displaying search results pages.
  *
- * @link https://developer.wordpress.org/themes/basics/template-hierarchy/#search-result
- *
- * @package WordPress
- * @subpackage Twenty_Seventeen
- * @since Twenty Seventeen 1.0
- * @version 1.0
+ * @package cosimo
  */
 
 get_header(); ?>
 
-<div class="wrap">
+	<section id="primary" class="content-area">
+		<main id="main" class="site-main">
+			<?php if ( have_posts() ) : ?>
+			
+				<?php if ( ! function_exists( 'elementor_theme_do_location' ) || ! elementor_theme_do_location( 'archive' ) ) : ?>
 
-	<header class="page-header">
-		<?php if ( have_posts() ) : ?>
-			<h1 class="page-title">
-			<?php
-			/* translators: Search query. */
-			printf( __( 'Search Results for: %s', 'twentyseventeen' ), '<span>' . get_search_query() . '</span>' );
-			?>
-			</h1>
-		<?php else : ?>
-			<h1 class="page-title"><?php _e( 'Nothing Found', 'twentyseventeen' ); ?></h1>
-		<?php endif; ?>
-	</header><!-- .page-header -->
+					<header class="page-header">
+						<h1 class="page-title">
+						<?php
+						/* translators: %s: search query */
+						printf( esc_html__( 'Search Results for: %s', 'cosimo' ), '<span>' . get_search_query() . '</span>' );
+						?>
+						</h1>
+					</header><!-- .page-header -->
 
-	<div id="primary" class="content-area">
-		<main id="main" class="site-main" role="main">
+					<?php /* Start the Loop */ global $i; $i = 0; ?>
+					<div class="cosimo-back">
+					<div class="cosimo" id="mainCosimo">
+					<div class="grid-sizer"></div>
+					<?php while ( have_posts() ) : the_post(); ?>
 
-		<?php
-		if ( have_posts() ) :
-			// Start the Loop.
-			while ( have_posts() ) :
-				the_post();
+						<?php
+						/**
+						 * Run the loop for the search to output the results.
+						 * If you want to overload this in a child theme then include a file
+						 * called content-search.php and that will be used instead.
+						 */
+						get_template_part( 'template-parts/content', get_post_format() );
+						$i++;
+						?>
 
-				/**
-				 * Run the loop for the search to output the results.
-				 * If you want to overload this in a child theme then include a file
-				 * called content-search.php and that will be used instead.
-				 */
-				get_template_part( 'template-parts/post/content', 'excerpt' );
+					<?php endwhile; ?>
+					</div><!-- #mainCosimo -->
+					</div><!-- .cosimo-back -->
 
-			endwhile; // End the loop.
+					<?php
+						the_posts_pagination( array(
+							'prev_text'          => '<i class="fa fa-angle-double-left spaceRight"></i>' . esc_html__( 'Previous', 'cosimo' ),
+							'next_text'          => esc_html__( 'Next', 'cosimo' ) . '<i class="fa fa-angle-double-right spaceLeft"></i>',
+							'before_page_number' => '<span class="meta-nav screen-reader-text">' . esc_html__( 'Page', 'cosimo' ) . ' </span>',
+						) );
+					?>
+				
+				<?php endif; ?>
 
-			the_posts_pagination(
-				array(
-					'prev_text'          => twentyseventeen_get_svg( array( 'icon' => 'arrow-left' ) ) . '<span class="screen-reader-text">' . __( 'Previous page', 'twentyseventeen' ) . '</span>',
-					'next_text'          => '<span class="screen-reader-text">' . __( 'Next page', 'twentyseventeen' ) . '</span>' . twentyseventeen_get_svg( array( 'icon' => 'arrow-right' ) ),
-					'before_page_number' => '<span class="meta-nav screen-reader-text">' . __( 'Page', 'twentyseventeen' ) . ' </span>',
-				)
-			);
+			<?php else : ?>
 
-		else :
-			?>
+				<?php get_template_part( 'template-parts/content', 'none' ); ?>
 
-			<p><?php _e( 'Sorry, but nothing matched your search terms. Please try again with some different keywords.', 'twentyseventeen' ); ?></p>
-			<?php
-				get_search_form();
-
-		endif;
-		?>
-
+			<?php endif; ?>
 		</main><!-- #main -->
-	</div><!-- #primary -->
-	<?php get_sidebar(); ?>
-</div><!-- .wrap -->
+	</section><!-- #primary -->
 
-<?php
-get_footer();
+<?php get_sidebar(); ?>
+<?php get_footer(); ?>

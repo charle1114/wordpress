@@ -1,43 +1,41 @@
 <?php
 /**
- * The template for displaying all pages
+ * The template for displaying all pages.
  *
  * This is the template that displays all pages by default.
  * Please note that this is the WordPress construct of pages
- * and that other 'pages' on your WordPress site may use a
+ * and that other 'pages' on your WordPress site will use a
  * different template.
  *
- * @link https://developer.wordpress.org/themes/basics/template-hierarchy/
- *
- * @package WordPress
- * @subpackage Twenty_Seventeen
- * @since Twenty Seventeen 1.0
- * @version 1.0
+ * @package cosimo
  */
 
-get_header(); ?>
+get_header();
+$enlargeFeatImage = get_theme_mod('cosimo_theme_options_enlargefeatured', '1');
+?>
 
-<div class="wrap">
 	<div id="primary" class="content-area">
-		<main id="main" class="site-main" role="main">
+		<?php if ($enlargeFeatImage == 1) : ?>
+			<div class="openFeatImage"><i class="fa fa-lg fa-angle-double-down"></i></div>
+		<?php endif; ?>
+		<main id="main" class="site-main">
+			<?php if ( ! function_exists( 'elementor_theme_do_location' ) || ! elementor_theme_do_location( 'single' ) ) : ?>
 
-			<?php
-			while ( have_posts() ) :
-				the_post();
+				<?php while ( have_posts() ) : the_post(); ?>
 
-				get_template_part( 'template-parts/page/content', 'page' );
+					<?php get_template_part( 'template-parts/content', 'page' ); ?>
 
-				// If comments are open or we have at least one comment, load up the comment template.
-				if ( comments_open() || get_comments_number() ) :
-					comments_template();
-				endif;
+					<?php
+						// If comments are open or we have at least one comment, load up the comment template
+						if ( comments_open() || get_comments_number() ) :
+							comments_template();
+						endif;
+					?>
 
-			endwhile; // End the loop.
-			?>
-
+				<?php endwhile; // end of the loop. ?>
+			<?php endif; ?>
 		</main><!-- #main -->
 	</div><!-- #primary -->
-</div><!-- .wrap -->
 
-<?php
-get_footer();
+<?php get_sidebar(); ?>
+<?php get_footer(); ?>
